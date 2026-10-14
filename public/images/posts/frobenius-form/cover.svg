@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <rect width="1600" height="900" fill="#0d121c"/>
+  <rect x="80" y="80" width="1440" height="740" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>
+  <text x="120" y="820" fill="#edc75a" font-family="ui-monospace, monospace" font-size="48">FNF</text>
+  <path d="M200 650 L500 280 L800 520 L1100 220 L1400 480" stroke="#edc75a" stroke-width="4"/>
+</svg>

@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+import '@fontsource-variable/ibm-plex-sans';
+import '@fontsource-variable/onest';
+import '@fontsource-variable/jetbrains-mono';
+import Search from '../components/Search.astro';
+import { site } from '../site';
+import { url } from '../lib/paths';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = site.tagline,
+  image,
+  type = 'website',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = image ? new URL(image, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+  </head>
+  <body>
+    <main>
+      <Search />
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    min-height: 100vh;
+  }
+</style>

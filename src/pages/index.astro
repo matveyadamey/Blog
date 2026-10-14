@@ -1,0 +1,231 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { site } from '../site';
+import { url, postCover } from '../lib/paths';
+import { formatDate } from '../lib/date';
+import { readingMinutes } from '../lib/reading-time';
+
+const posts = (await getCollection('posts'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const lastUpdated = formatDate(new Date());
+---
+
+<Base title={site.name} description={site.tagline}>
+  <section class="hero">
+    <div class="wordmark">
+      <span class="big display">{site.name}</span>
+      <span class="label mono">{site.kicker}</span>
+    </div>
+    <p class="tagline">{site.tagline}</p>
+    <div class="stats mono">
+      <span>{posts.length} {posts.length === 1 ? 'пост' : posts.length < 5 ? 'поста' : 'постов'}</span>
+      <span>обновлено {lastUpdated}</span>
+    </div>
+  </section>
+
+  <section class="feed">
+    <div class="feed-head">
+      <h2 class="display">Лента</h2>
+    </div>
+
+    <div class="grid">
+      {
+        posts.map((p) => {
+          const cover = postCover(p.id, p.data.cover);
+          return (
+            <a class="card" href={url(`posts/${p.id}/`)}>
+              <div class="thumb">
+                {cover ? <img src={cover} alt="" /> : <div class="fallback" />}
+                <div class="shade" />
+                <span class="date mono">{formatDate(p.data.date)}</span>
+                <h3 class="display">{p.data.title}</h3>
+                <span class="time mono">{readingMinutes(p.body)} мин</span>
+              </div>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .display {
+    font-family: var(--font-display);
+  }
+
+  .hero {
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 18px 22px 10px;
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .big {
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 700;
+    color: var(--fg);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    color: var(--accent);
+  }
+
+  .tagline {
+    margin: 14px 0 0;
+    max-width: 720px;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--fg-dim);
+  }
+
+  .stats {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    border: 1px solid var(--line);
+    font-size: 11px;
+    color: var(--fg-dim);
+  }
+
+  .stats span {
+    padding: 7px 14px;
+  }
+
+  .stats span:first-child {
+    border-right: 1px solid var(--line);
+  }
+
+  .feed {
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 28px 22px 90px;
+  }
+
+  .feed-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 18px 0 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .feed-head h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 32px;
+  }
+
+  .card {
+    display: block;
+    border-radius: 18px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  }
+
+  .thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--bg-elev);
+  }
+
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .fallback {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 12px,
+        rgba(255, 255, 255, 0.05) 12px,
+        rgba(255, 255, 255, 0.05) 13px
+      );
+  }
+
+  .shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, transparent 38%),
+      linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, transparent 48%);
+    pointer-events: none;
+  }
+
+  .date {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    z-index: 1;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .card h3 {
+    position: absolute;
+    left: 16px;
+    right: 96px;
+    bottom: 14px;
+    z-index: 1;
+    margin: 0;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .time {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 1;
+    font-size: 11px;
+    letter-spacing: 0.09em;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  @media (max-width: 400px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" fill="none">
+  <rect width="1200" height="640" fill="#000"/>
+  <rect x="1" y="1" width="1198" height="638" stroke="#fff" stroke-opacity=".16"/>
+  <line x1="80" y1="560" x2="1120" y2="560" stroke="#fff" stroke-opacity=".28"/>
+  <line x1="80" y1="80" x2="80" y2="560" stroke="#fff" stroke-opacity=".28"/>
+  <path d="M80 480 L 280 420 L 480 300 L 680 220 L 880 160 L 1080 120" stroke="#fff" stroke-width="2.5"/>
+  <circle cx="280" cy="420" r="5" fill="#fff"/>
+  <circle cx="480" cy="300" r="5" fill="#fff"/>
+  <circle cx="680" cy="220" r="5" fill="#fff"/>
+  <circle cx="880" cy="160" r="5" fill="#fff"/>
+  <text x="96" y="72" fill="#fff" fill-opacity=".5" font-family="ui-monospace, monospace" font-size="16">loss</text>
+  <text x="1060" y="592" fill="#fff" fill-opacity=".5" font-family="ui-monospace, monospace" font-size="16">epoch</text>
+</svg>

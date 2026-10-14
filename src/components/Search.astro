@@ -1,0 +1,223 @@
+<div class="search-bar">
+  <button class="search mono" type="button" data-search-trigger aria-label="Поиск по постам">
+    <span>Поиск</span>
+    <span class="keys" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
+  </button>
+</div>
+
+<div class="overlay" data-search hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Поиск по постам">
+    <input
+      class="query"
+      type="search"
+      data-search-input
+      placeholder="Название или фрагмент статьи…"
+      autocomplete="off"
+    />
+    <p class="hint mono" data-search-hint>Начните вводить запрос</p>
+    <ul class="results" data-search-results></ul>
+  </div>
+</div>
+
+<script>
+  import { url } from '../lib/paths';
+
+  type Hit = { id: string; title: string; excerpt: string; date: string };
+
+  const overlay = document.querySelector<HTMLElement>('[data-search]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const results = document.querySelector<HTMLElement>('[data-search-results]');
+  const hint = document.querySelector<HTMLElement>('[data-search-hint]');
+  const triggers = document.querySelectorAll('[data-search-trigger]');
+
+  let index: Hit[] = [];
+  let loaded = false;
+
+  async function loadIndex() {
+    if (loaded) return;
+    loaded = true;
+    const res = await fetch(url('search.json'));
+    index = await res.json();
+  }
+
+  function open() {
+    if (!overlay || !input) return;
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    input.value = '';
+    render('');
+    input.focus();
+    loadIndex();
+  }
+
+  function close() {
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  function render(q: string) {
+    if (!results || !hint) return;
+    const query = q.trim().toLowerCase();
+    if (!query) {
+      results.innerHTML = '';
+      hint.textContent = 'Начните вводить запрос';
+      hint.hidden = false;
+      return;
+    }
+    const hits = index
+      .filter(
+        (p) =>
+          p.title.toLowerCase().includes(query) || p.excerpt.toLowerCase().includes(query),
+      )
+      .slice(0, 8);
+    hint.hidden = hits.length > 0;
+    hint.textContent = 'Ничего не найдено';
+    results.innerHTML = hits
+      .map(
+        (p) =>
+          `<li><a href="${url(`posts/${p.id}/`)}"><span class="t">${escapeHtml(p.title)}</span><span class="e">${escapeHtml(p.excerpt)}</span></a></li>`,
+      )
+      .join('');
+  }
+
+  function escapeHtml(s: string) {
+    return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+  }
+
+  for (const t of triggers) t.addEventListener('click', open);
+  overlay?.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
+  input?.addEventListener('input', () => render(input.value));
+  addEventListener('keydown', (e) => {
+    const meta = e.metaKey || e.ctrlKey;
+    if (meta && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      overlay?.hidden ? open() : close();
+    }
+    if (e.key === 'Escape') close();
+  });
+</script>
+
+<style>
+  .search-bar {
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 22px 22px 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 38px;
+    padding: 0 12px 0 14px;
+    border: 1px solid var(--line-strong);
+    background: none;
+    color: var(--fg-dim);
+    font-size: 12px;
+    cursor: pointer;
+    transition:
+      border-color 0.15s,
+      color 0.15s;
+  }
+
+  .search:hover {
+    border-color: #fff;
+    color: var(--fg);
+  }
+
+  .keys {
+    display: flex;
+    gap: 3px;
+  }
+
+  .keys kbd {
+    border: 1px solid var(--line-strong);
+    padding: 2px 5px;
+    font-size: 11px;
+    line-height: 1;
+    font-family: var(--font-mono);
+  }
+
+  @media (max-width: 640px) {
+    .keys {
+      display: none;
+    }
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: rgba(7, 17, 31, 0.78);
+    display: flex;
+    justify-content: center;
+    padding: 14vh 22px 40px;
+  }
+
+  .overlay[hidden] {
+    display: none;
+  }
+
+  .panel {
+    width: min(640px, 100%);
+    border: 1px solid var(--line-strong);
+    background: var(--bg-elev);
+  }
+
+  .query {
+    width: 100%;
+    padding: 18px 18px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    color: var(--fg);
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    outline: none;
+  }
+
+  .hint {
+    margin: 0;
+    padding: 16px 18px;
+    font-size: 11px;
+    color: var(--fg-faint);
+  }
+
+  .results {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 8px;
+  }
+
+  .results a {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: var(--fg);
+  }
+
+  .results a:hover {
+    background: var(--hover);
+  }
+
+  .results .t {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+
+  .results .e {
+    font-size: 14px;
+    color: var(--fg-dim);
+    line-height: 1.4;
+  }
+</style>

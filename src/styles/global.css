@@ -1,0 +1,79 @@
+:root {
+  --bg: #070b12;
+  --bg-deep: #05070c;
+  --bg-elev: #0d121c;
+  --bronze: #edc75a;
+  --bronze-deep: #c9a03a;
+  --fg: #f0ebe3;
+  --fg-body: rgba(240, 235, 227, 0.88);
+  --fg-dim: rgba(240, 235, 227, 0.64);
+  --fg-faint: rgba(240, 235, 227, 0.4);
+  --line: rgba(255, 255, 255, 0.16);
+  --line-strong: rgba(255, 255, 255, 0.28);
+  --accent: #edc75a;
+  --hover: rgba(255, 255, 255, 0.04);
+
+  --font-display: 'IBM Plex Sans Variable', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-body: 'Onest Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  --wrap: 1320px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--fg-body);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: var(--bg);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--bronze);
+  color: var(--bg-deep);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}

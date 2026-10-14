@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <rect width="1600" height="900" fill="#0a0a0a"/>
+  <rect x="90" y="90" width="1420" height="720" stroke="#fff" stroke-opacity=".18"/>
+  <path d="M160 620 C 360 620, 420 180, 800 180 C 1180 180, 1240 620, 1440 620" stroke="#fff" stroke-width="3"/>
+  <line x1="160" y1="700" x2="1440" y2="700" stroke="#fff" stroke-opacity=".25"/>
+  <line x1="160" y1="180" x2="160" y2="700" stroke="#fff" stroke-opacity=".25"/>
+  <circle cx="800" cy="180" r="7" fill="#fff"/>
+  <text x="180" y="160" fill="#fff" fill-opacity=".45" font-family="ui-monospace, monospace" font-size="28" letter-spacing="4">N(�, ò)</text>
+</svg>
